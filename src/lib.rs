@@ -3,11 +3,6 @@
 //! The traits are seperated as `use existent::Existent` doesn't really
 //! convey what is being imported, and by importing only a single method
 //! at a time, the potential for clashes is reduced.
-//!
-//! There is a blanket `impl for T` for each trait so you should not `use` the
-//! trait if you are working with types containing methods named `when` or `unless`.
-//!
-//! This should hopefully be less of a problem when/if UFCS lands.
 
 pub trait When {
     /// Returns `Some(self)` if the predicate is `true`, otherwise `None`.

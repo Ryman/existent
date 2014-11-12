@@ -72,3 +72,29 @@ fn lifetimes_work() {
     };
     assert_eq!(Some(x.as_slice()), ys);
 }
+
+#[test]
+fn ufcs() {
+    #[deriving(PartialEq, Show)]
+    struct Foo(uint);
+
+    impl Foo {
+        fn when(self, _: bool) -> Option<Foo> {
+            None
+        }
+
+        fn unless(self, _: bool) -> Option<Foo> {
+            Some(Foo(52))
+        }
+    }
+
+    assert_eq!(Some(Foo(4)), When::when(Foo(4), true))
+    assert_eq!(None, When::when(Foo(5), false))
+    assert_eq!(None, Unless::unless(Foo(6), true))
+    assert_eq!(Some(Foo(7)), Unless::unless(Foo(7), false))
+
+    assert_eq!(None, Foo(8).when(true))
+    assert_eq!(None, Foo(3).when(false))
+    assert_eq!(Some(Foo(52)), Foo(2).unless(true))
+    assert_eq!(Some(Foo(52)), Foo(1).unless(false))
+}
