@@ -98,3 +98,18 @@ fn ufcs() {
     assert_eq!(Some(Foo(52)), Foo(2).unless(true))
     assert_eq!(Some(Foo(52)), Foo(1).unless(false))
 }
+
+#[test]
+fn lazy() {
+    fn expensive_computation(bar: uint) -> uint {
+        42 * bar
+    }
+
+    let mut bar = 1;
+    assert_eq!(Some(42), (|| expensive_computation(bar)).unless(false))
+    assert_eq!(None::<uint>, (|| expensive_computation(bar)).unless(true))
+
+    bar = 2;
+    assert_eq!(Some(84), (|| expensive_computation(bar)).when(true))
+    assert_eq!(None::<uint>, (|| expensive_computation(bar)).when(false))
+}

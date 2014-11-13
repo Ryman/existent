@@ -4,7 +4,7 @@
 //! convey what is being imported, and by importing only a single method
 //! at a time, the potential for clashes is reduced.
 
-pub trait When {
+pub trait When<T> {
     /// Returns `Some(self)` if the predicate is `true`, otherwise `None`.
     ///
     /// # Example
@@ -16,12 +16,10 @@ pub trait When {
     /// assert_eq!(Some(x), x.when(x < 200));
     /// ```
     #[inline]
-    fn when(self, pred: bool) -> Option<Self> {
-        if pred { Some(self) } else { None }
-    }
+    fn when(self, pred: bool) -> Option<T>;
 }
 
-pub trait Unless {
+pub trait Unless<T> {
     /// Returns `None` if the predicate is `true`, otherwise `Some(self)`.
     ///
     /// # Example
@@ -36,10 +34,33 @@ pub trait Unless {
     /// assert_eq!(filtered, vec!["Three", "Two", "One"])
     /// ```
     #[inline]
-    fn unless(self, pred: bool) -> Option<Self> {
+    fn unless(self, pred: bool) -> Option<T>;
+}
+
+impl<T> When<T> for T {
+    #[inline]
+    fn when(self, pred: bool) -> Option<T> {
+        if pred { Some(self) } else { None }
+    }
+}
+
+impl<T> Unless<T> for T {
+    #[inline]
+    fn unless(self, pred: bool) -> Option<T> {
         self.when(!pred)
     }
 }
 
-impl<T> When for T {}
-impl<T> Unless for T {}
+impl<'a, T> When<T> for ||:'a -> T {
+    #[inline]
+    fn when(self, pred: bool) -> Option<T> {
+        if pred { Some(self()) } else { None }
+    }
+}
+
+impl<'a, T> Unless<T> for ||:'a -> T {
+    #[inline]
+    fn unless(self, pred: bool) -> Option<T> {
+        self.when(!pred)
+    }
+}
