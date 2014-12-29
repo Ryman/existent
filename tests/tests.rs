@@ -26,7 +26,7 @@ macro_rules! basic_tests(
             )+
         }
     )
-)
+);
 
 basic_tests!(
     ints - 4u,
@@ -34,7 +34,7 @@ basic_tests!(
     tuples - ("Hello", 42i32, 79.4f64),
     strings - "World".to_string(),
     static_slices - "!!!!!one1on1"
-)
+);
 
 #[test]
 fn filter_map() {
@@ -44,7 +44,7 @@ fn filter_map() {
                      .filter_map(|s| s.unless(s.is_empty()))
                      .collect::<Vec<&str>>();
 
-    assert_eq!(filtered, vec!["This", "Has", "Blanks"])
+    assert_eq!(filtered, vec!["This", "Has", "Blanks"]);
 }
 
 #[test]
@@ -88,15 +88,15 @@ fn ufcs() {
         }
     }
 
-    assert_eq!(Some(Foo(4)), When::when(Foo(4), true))
-    assert_eq!(None, When::when(Foo(5), false))
-    assert_eq!(None, Unless::unless(Foo(6), true))
-    assert_eq!(Some(Foo(7)), Unless::unless(Foo(7), false))
+    assert_eq!(Some(Foo(4)), When::when(Foo(4), true));
+    assert_eq!(None, When::when(Foo(5), false));
+    assert_eq!(None, Unless::unless(Foo(6), true));
+    assert_eq!(Some(Foo(7)), Unless::unless(Foo(7), false));
 
-    assert_eq!(None, Foo(8).when(true))
-    assert_eq!(None, Foo(3).when(false))
-    assert_eq!(Some(Foo(52)), Foo(2).unless(true))
-    assert_eq!(Some(Foo(52)), Foo(1).unless(false))
+    assert_eq!(None, Foo(8).when(true));
+    assert_eq!(None, Foo(3).when(false));
+    assert_eq!(Some(Foo(52)), Foo(2).unless(true));
+    assert_eq!(Some(Foo(52)), Foo(1).unless(false));
 }
 
 #[test]
@@ -106,10 +106,10 @@ fn lazy() {
     }
 
     let mut bar = 1;
-    assert_eq!(Some(42), (|| expensive_computation(bar)).unless(false))
-    assert_eq!(None::<uint>, (|| expensive_computation(bar)).unless(true))
+    assert_eq!(Some(42), (|| expensive_computation(bar)).unless(false));
+    assert_eq!(None::<uint>, (|| expensive_computation(bar)).unless(true));
 
     bar = 2;
-    assert_eq!(Some(84), (|| expensive_computation(bar)).when(true))
-    assert_eq!(None::<uint>, (|| expensive_computation(bar)).when(false))
+    assert_eq!(Some(84), (|| expensive_computation(bar)).when(true));
+    assert_eq!(None::<uint>, (|| expensive_computation(bar)).when(false));
 }
