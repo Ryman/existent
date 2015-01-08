@@ -51,16 +51,17 @@ impl<T> Unless<T> for T {
     }
 }
 
-impl<'a, T> When<T> for ||:'a -> T {
-    #[inline]
-    fn when(self, pred: bool) -> Option<T> {
-        if pred { Some(self()) } else { None }
-    }
-}
+// FIXME: Coherence requires a negative impl, T could impl FnOnce -> T
+// impl<'a, T> When<T> for ||:'a -> T {
+//     #[inline]
+//     fn when(self, pred: bool) -> Option<T> {
+//         if pred { Some(self()) } else { None }
+//     }
+// }
 
-impl<'a, T> Unless<T> for ||:'a -> T {
-    #[inline]
-    fn unless(self, pred: bool) -> Option<T> {
-        self.when(!pred)
-    }
-}
+// impl<'a, T> Unless<T> for ||:'a -> T {
+//     #[inline]
+//     fn unless(self, pred: bool) -> Option<T> {
+//         self.when(!pred)
+//     }
+// }
