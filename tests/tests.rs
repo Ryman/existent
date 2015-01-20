@@ -1,4 +1,3 @@
-#![feature(macro_rules)]
 extern crate existent;
 use existent::{When, Unless};
 
@@ -29,7 +28,7 @@ macro_rules! basic_tests(
 );
 
 basic_tests!(
-    ints - 4u,
+    ints - 4us,
     vecs - vec![false, true, false],
     tuples - ("Hello", 42i32, 79.4f64),
     strings - "World".to_string(),
@@ -75,8 +74,8 @@ fn lifetimes_work() {
 
 #[test]
 fn ufcs() {
-    #[deriving(PartialEq, Show)]
-    struct Foo(uint);
+    #[derive(PartialEq, Show)]
+    struct Foo(usize);
 
     impl Foo {
         fn when(self, _: bool) -> Option<Foo> {
