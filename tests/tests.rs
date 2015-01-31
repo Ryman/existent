@@ -1,3 +1,5 @@
+#![feature(core, collections)]
+
 extern crate existent;
 use existent::{When, Unless};
 
@@ -74,7 +76,7 @@ fn lifetimes_work() {
 
 #[test]
 fn ufcs() {
-    #[derive(PartialEq, Show)]
+    #[derive(PartialEq, Debug)]
     struct Foo(usize);
 
     impl Foo {
