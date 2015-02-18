@@ -1,4 +1,4 @@
-#![feature(core, collections)]
+#![feature(core)]
 
 extern crate existent;
 use existent::{When, Unless};
@@ -30,7 +30,7 @@ macro_rules! basic_tests(
 );
 
 basic_tests!(
-    ints - 4us,
+    ints - 4usize,
     vecs - vec![false, true, false],
     tuples - ("Hello", 42i32, 79.4f64),
     strings - "World".to_string(),
