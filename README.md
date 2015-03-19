@@ -23,6 +23,25 @@ let filtered = xs.into_iter()
 assert_eq!(filtered, vec!["Three", "Two", "One"])
 ```
 
+
+## Lazy evaluation
+```rust
+fn expensive_computation(bar: usize) -> usize {
+    42 * bar
+}
+
+let mut bar = 1;
+assert_eq!(Some(42), (|| expensive_computation(bar)).do_unless(false));
+assert_eq!(None, (|| expensive_computation(bar)).do_unless(true));
+
+bar = 2;
+assert_eq!(Some(84), (|| expensive_computation(bar)).do_when(true));
+assert_eq!(None, (|| expensive_computation(bar)).do_when(false));
+```
+
+# Cargo usage
+
+```
 [dependencies.existent]
 
 git = "https://github.com/Ryman/existent.git"

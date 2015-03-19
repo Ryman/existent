@@ -17,6 +17,12 @@ pub trait When<T> {
     /// ```
     #[inline]
     fn when(self, pred: bool) -> Option<T>;
+
+    /// Returns `Some(closure_result)` if the predicate is `true`, otherwise `None`.
+    ///
+    /// Invokes the closure when iff the predicate is `true`.
+    #[inline]
+    fn do_when<O>(self, pred: bool) -> Option<O> where Self: FnOnce() -> O;
 }
 
 pub trait Unless<T> {
@@ -35,12 +41,23 @@ pub trait Unless<T> {
     /// ```
     #[inline]
     fn unless(self, pred: bool) -> Option<T>;
+
+    /// Returns `None` if the predicate is `true`, otherwise `Some(closure_result)`.
+    ///
+    /// Invokes the closure when iff the predicate is `false`.
+    #[inline]
+    fn do_unless<O>(self, pred: bool) -> Option<O> where Self: FnOnce() -> O;
 }
 
 impl<T> When<T> for T {
     #[inline]
     fn when(self, pred: bool) -> Option<T> {
         if pred { Some(self) } else { None }
+    }
+
+    #[inline]
+    fn do_when<O>(self, pred: bool) -> Option<O> where Self: FnOnce() -> O {
+        if pred { Some(self()) } else { None }
     }
 }
 
@@ -49,19 +66,9 @@ impl<T> Unless<T> for T {
     fn unless(self, pred: bool) -> Option<T> {
         self.when(!pred)
     }
+
+    #[inline]
+    fn do_unless<O>(self, pred: bool) -> Option<O> where Self: FnOnce() -> O {
+        self.do_when(!pred)
+    }
 }
-
-// FIXME: Coherence requires a negative impl, T could impl FnOnce -> T
-// impl<'a, T> When<T> for ||:'a -> T {
-//     #[inline]
-//     fn when(self, pred: bool) -> Option<T> {
-//         if pred { Some(self()) } else { None }
-//     }
-// }
-
-// impl<'a, T> Unless<T> for ||:'a -> T {
-//     #[inline]
-//     fn unless(self, pred: bool) -> Option<T> {
-//         self.when(!pred)
-//     }
-// }

@@ -1,5 +1,3 @@
-#![feature(core)]
-
 extern crate existent;
 use existent::{When, Unless};
 
@@ -61,17 +59,17 @@ fn lifetimes_work() {
     let x = "Abandoning".to_string();
 
     let ys = {
-        let y = x.as_slice();
+        let y = &x[..];
         unless(y)
     };
 
-    assert_eq!(Some(x.as_slice()), ys);
+    assert_eq!(Some(&*x), ys);
 
     let ys = {
-        let y = x.as_slice();
+        let y = &x[..];
         when(y)
     };
-    assert_eq!(Some(x.as_slice()), ys);
+    assert_eq!(Some(&*x), ys);
 }
 
 #[test]
@@ -100,18 +98,17 @@ fn ufcs() {
     assert_eq!(Some(Foo(52)), Foo(1).unless(false));
 }
 
-// Pending on negative bounds/impls
-// #[test]
-// fn lazy() {
-//     fn expensive_computation(bar: uint) -> uint {
-//         42 * bar
-//     }
+#[test]
+fn lazy() {
+    fn expensive_computation(bar: usize) -> usize {
+        42 * bar
+    }
 
-//     let mut bar = 1;
-//     assert_eq!(Some(42), (|| expensive_computation(bar)).unless(false));
-//     assert_eq!(None::<uint>, (|| expensive_computation(bar)).unless(true));
+    let mut bar = 1;
+    assert_eq!(Some(42), (|| expensive_computation(bar)).do_unless(false));
+    assert_eq!(None, (|| expensive_computation(bar)).do_unless(true));
 
-//     bar = 2;
-//     assert_eq!(Some(84), (|| expensive_computation(bar)).when(true));
-//     assert_eq!(None::<uint>, (|| expensive_computation(bar)).when(false));
-// }
+    bar = 2;
+    assert_eq!(Some(84), (|| expensive_computation(bar)).do_when(true));
+    assert_eq!(None, (|| expensive_computation(bar)).do_when(false));
+}
